@@ -1,4 +1,4 @@
-# Swaglabs Appium Mobile Test Automation Framework
+# Appium Mobile Test Automation Framework For Swaglabs
 
 ## Table of Contents
 
