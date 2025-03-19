@@ -1,0 +1,7 @@
+{
+  "valid_username": "standard_user",
+  "valid_password": "secret_sauce",
+  "invalid_password": "43243243242324324",
+  "product_page_header": "PRODUCTS",
+  "invalid_login_error_message": "Username and password do not match any user in this service."
+}

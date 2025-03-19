@@ -7,6 +7,8 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 import pages.LoginPage;
 import pages.ProductPage;
+import utils.JsonReader;
+
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
@@ -17,6 +19,7 @@ public class LoginTest {
     private  AppiumDriverLocalService service;
     // Driver instance for Android interactions
     private AndroidDriver driver;
+    private JsonReader jsonReader;
     LoginPage loginPage;
 
     /**
@@ -25,6 +28,7 @@ public class LoginTest {
     @BeforeClass
     public void setupServer() {
        service= driverFactory.startServer();
+       jsonReader = new JsonReader("testdata.json");
     }
 
     /**
@@ -41,12 +45,12 @@ public class LoginTest {
     public void testValidLogin() {
 
        loginPage
-                 .enterUsername("standard_user")
-                 .enterPassword("secret_sauce")
+                 .enterUsername(jsonReader.getValue("valid_username"))
+                 .enterPassword(jsonReader.getValue("valid_password"))
                  .clickLogin();
 
         ProductPage productPage = new ProductPage(driver);
-        String expectedHeader="PRODUCTS";
+        String expectedHeader=jsonReader.getValue("product_page_header");;
 
         Assert.assertEquals( productPage.getPageTitle(), expectedHeader);
     }
@@ -54,11 +58,11 @@ public class LoginTest {
     public void testInvalidLogin() {
 
         loginPage
-                .enterUsername("standard_user")
-                .enterPassword("43243243242324324")
+                .enterUsername(jsonReader.getValue("valid_username"))
+                .enterPassword(jsonReader.getValue("invalid_password"))
                 .clickLogin();
 
-        String expectedText="Username and password do not match any user in this service.";
+        String expectedText= jsonReader.getValue("invalid_login_error_message");
         Assert.assertEquals( loginPage.getErrorMessage(), expectedText);
     }
     /**
