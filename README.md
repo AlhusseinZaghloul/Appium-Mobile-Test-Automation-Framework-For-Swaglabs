@@ -1,5 +1,3 @@
-
-
 # Test Automation Framework
 
 ## Overview
@@ -11,15 +9,15 @@ This project is a robust test automation framework built with **Java** and **Mav
 The framework is organized into a modular structure to separate concerns and streamline development and testing workflows. Key directories and their purposes are outlined below:
 
 - **`src/main/java`**
-    - **`drivers`**: Houses the `DriverFactory` class, which manages the Appium server and AndroidDriver lifecycle. It handles starting, stopping, and configuring the driver based on settings from an external configuration file.
-    - **`pages`**: Implements the Page Object Model with classes like `LoginPage` and `ProductPage`. These classes encapsulate UI interactions and validations for specific screens of the Android application.
+  - **`drivers`**: Houses the `DriverFactory` class, which manages the Appium server and AndroidDriver lifecycle. It handles starting, stopping, and configuring the driver based on settings from an external configuration file.
+  - **`pages`**: Implements the Page Object Model with classes like `LoginPage` and `ProductPage`. These classes encapsulate UI interactions and validations for specific screens of the Android application.
 
 - **`src/test/java`**
-    - **`tests`**: Contains test classes such as `LoginTest`, which define test scenarios using TestNG. Each test method includes setup and teardown processes to interact with the application seamlessly.
+  - **`tests`**: Contains test classes such as `LoginTest`, which define test scenarios using TestNG. Each test method includes setup and teardown processes to interact with the application seamlessly.
 
 - **`src/test/resources`**
-    - **`testData.json`**: Stores external test data (e.g., expected headers, error messages) used for assertions in test cases, enabling data-driven testing.
-    - **`config.properties`**: A self-documenting configuration file that externalizes settings for the Appium driver and server, such as device capabilities, application details, and server URIs. Comments within the file explain each property’s purpose.
+  - **`testData.json`**: Stores external test data (e.g., expected headers, error messages) used for assertions in test cases, enabling data-driven testing.
+  - **`config.properties`**: A self-documenting configuration file that externalizes settings for the Appium driver and server, such as device capabilities, application details, and server URIs. Comments within the file explain each property’s purpose.
 
 ---
 
@@ -33,6 +31,9 @@ The framework is organized into a modular structure to separate concerns and str
 
 - **Test Cases**  
   Test classes in the `tests` package, such as `LoginTest`, define specific test scenarios (e.g., valid and invalid login flows). These tests leverage data from `testData.json` for assertions, ensuring consistent verification of expected outcomes.
+
+- **Data-Driven Testing**  
+  The framework incorporates data-driven testing by externalizing test data into a JSON file (`testData.json`). This separation allows test methods to retrieve assertion values dynamically, enhancing maintainability. For instance, in `LoginTest`, expected headers and error messages are sourced from the JSON file, ensuring that updates to these values do not require changes to the test code.
 
 ---
 
@@ -63,3 +64,4 @@ To execute tests using this framework, follow these steps:
    mvn clean install
    ```
 
+with the current implementation, where test data is externalized for individual tests, providing a foundation for maintainability and potential future expansion to fully parameterized data-driven testing.

@@ -28,7 +28,7 @@ public class LoginTest {
     @BeforeClass
     public void setupServer() {
        service= driverFactory.startServer();
-       jsonReader = new JsonReader("testdata.json");
+       jsonReader = new JsonReader("testData.json");
     }
 
     /**
