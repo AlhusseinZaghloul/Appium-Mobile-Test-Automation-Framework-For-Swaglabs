@@ -4,10 +4,12 @@ import drivers.DriverFactory;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import org.testng.Assert;
+import org.testng.ITestResult;
 import org.testng.annotations.*;
 import pages.LoginPage;
 import pages.ProductPage;
 import utils.JsonReader;
+import utils.ScreenshotUtils;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -69,7 +71,14 @@ public class LoginTest {
      * Cleans up driver after each test method
      */
     @AfterMethod
-    public void quitDriver() {
+    public void quitDriver(ITestResult result) {
+        // Capture screenshot on failure
+        if (result.getStatus() == ITestResult.FAILURE) {
+            String testName = result.getMethod().getMethodName();
+            ScreenshotUtils.captureScreenshot(driver, testName);
+        }
+
+        // Quit driver
         if (driver != null) {
             driverFactory.quitDriver();
         }
