@@ -7,11 +7,12 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 import pages.LoginPage;
 import pages.ProductPage;
-
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
 public class LoginTest {
+
+    DriverFactory driverFactory = new DriverFactory();
     // Server instance for Appium managing the local server.
     private  AppiumDriverLocalService service;
     // Driver instance for Android interactions
@@ -23,7 +24,7 @@ public class LoginTest {
      */
     @BeforeClass
     public void setupServer() {
-       this.service= DriverFactory.startServer();
+       service= driverFactory.startServer();
     }
 
     /**
@@ -32,17 +33,12 @@ public class LoginTest {
      */
     @BeforeMethod
     public void setupDriver() throws URISyntaxException, MalformedURLException {
-        this.driver= DriverFactory.setupDriver();
+        driver= driverFactory.setupDriver();
         loginPage = new LoginPage(driver);
     }
-    /**
-     * Test scenario demonstrating basic UI interactions:
-     * - Navigating through menus
-     * - Scrolling to elements
-     * - Text input operations
-     */
+
     @Test
-    public void testValidLogin() throws InterruptedException {
+    public void testValidLogin() {
 
        loginPage
                  .enterUsername("standard_user")
@@ -55,7 +51,7 @@ public class LoginTest {
         Assert.assertEquals( productPage.getPageTitle(), expectedHeader);
     }
     @Test
-    public void testInvalidLogin() throws InterruptedException {
+    public void testInvalidLogin() {
 
         loginPage
                 .enterUsername("standard_user")
@@ -71,7 +67,7 @@ public class LoginTest {
     @AfterMethod
     public void quitDriver() {
         if (driver != null) {
-            driver.quit();
+            driverFactory.quitDriver();
         }
     }
     /**
@@ -80,7 +76,7 @@ public class LoginTest {
     @AfterClass
     public void quitServer() {
         if (service != null && service.isRunning()) {
-            service.stop();
+            driverFactory.stopServer();
         }
     }
 

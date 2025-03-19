@@ -3,11 +3,13 @@ package drivers;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
-import org.openqa.selenium.Platform;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
+import java.util.Properties;
 
 /*
  * The DriverManager class provides utility methods for managing
@@ -16,23 +18,21 @@ import java.time.Duration;
  * test classes cleaner and easier to maintain.
  */
 public class DriverFactory {
-    private DriverFactory(){}
 
     // Instance of the Appium service managing the local server.
-    private static AppiumDriverLocalService service;
+    private AppiumDriverLocalService service;
 
     // Instance of AndroidDriver for interacting with the Android device.
-    private static AndroidDriver driver;
+    private AndroidDriver driver;
 
     /*
      * Starts the Appium server using the default service configuration.
      */
-    public static AppiumDriverLocalService startServer() {
+    public AppiumDriverLocalService startServer() {
         service = AppiumDriverLocalService.buildDefaultService();
         service.start();
         return service;
     }
-
     /*
      * Configures and initializes the AndroidDriver using UiAutomator2Options.
      *
@@ -40,34 +40,43 @@ public class DriverFactory {
      * @throws URISyntaxException if the Appium server URI is invalid.
      * @throws MalformedURLException if the Appium server URL is malformed.
      */
-    public static AndroidDriver setupDriver() throws URISyntaxException, MalformedURLException {
-        // Create options for the Android driver.
+    public AndroidDriver setupDriver() throws URISyntaxException, MalformedURLException {
+
+        // Load properties from config.properties
+        Properties props = new Properties();
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+            if (input == null) {
+                throw new IOException("Unable to find config.properties in src/test/resources");
+            }
+            props.load(input);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Create options and set capabilities from properties
         UiAutomator2Options options = new UiAutomator2Options();
+        options.setPlatformName(props.getProperty("platformName"));
+        options.setDeviceName(props.getProperty("deviceName"));
+        options.setAvd(props.getProperty("avd"));
+        options.setAvdLaunchTimeout(Duration.ofSeconds(Long.parseLong(props.getProperty("avdLaunchTimeout"))));
+        options.setAvdReadyTimeout(Duration.ofSeconds(Long.parseLong(props.getProperty("avdReadyTimeout"))));
+        options.setApp(props.getProperty("app"));
+        options.setAppPackage(props.getProperty("appPackage"));
+        options.setAppActivity(props.getProperty("appActivity"));
+        options.setNewCommandTimeout(Duration.ofSeconds(Long.parseLong(props.getProperty("newCommandTimeout"))));
 
-        // Configure device capabilities.
-        options.setPlatformName(Platform.ANDROID.name());
-        options.setDeviceName("Medium_Phone_API_35");
-        options.setAvd("Medium_Phone_API_35");
+        // Get the Appium server URI from properties
+        String appiumServerUri = props.getProperty("appiumServerUri");
 
-        // Set emulator launch timeouts.
-        options.setAvdLaunchTimeout(Duration.ofSeconds(180));
-        options.setAvdReadyTimeout(Duration.ofSeconds(180));
-
-        // Specify the application under test.
-        options.setApp("./src/test/resources/SauceLabs-app.apk");
-        options.setAppPackage("com.swaglabsmobileapp");
-        options.setAppActivity("com.swaglabsmobileapp.MainActivity");
-        options.setNewCommandTimeout(Duration.ofSeconds(100));
-
-        // Initialize the AndroidDriver with the provided options.
-        driver = new AndroidDriver(new URI("http://127.0.0.1:4723").toURL(), options);
+        // Initialize the driver with the dynamic URI
+        driver = new AndroidDriver(new URI(appiumServerUri).toURL(), options);
         return driver;
     }
 
     /*
      * Quits the AndroidDriver instance to close the application and test session.
      */
-    public static void quitDriver() {
+    public void quitDriver() {
         if (driver != null) {
             driver.quit();
         }
@@ -76,7 +85,7 @@ public class DriverFactory {
     /*
      * Stops the Appium server if it is currently running.
      */
-    public static void stopServer() {
+    public void stopServer() {
         if (service != null && service.isRunning()) {
             service.stop();
         }

@@ -32,8 +32,8 @@ public class LoginPage {
     public ProductPage clickLogin() {
         ElementsActions.clicking(driver,loginButton);
         return new ProductPage(driver);
-
     }
+
     public String getErrorMessage(){
         return ElementsActions.getAttributeFromElement(driver,errorMessage,"text");
     }
