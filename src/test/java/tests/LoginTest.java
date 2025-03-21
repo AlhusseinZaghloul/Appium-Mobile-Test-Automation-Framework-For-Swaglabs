@@ -8,7 +8,8 @@ import org.testng.ITestResult;
 import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
 import pages.LoginPage;
-import pages.ProductPage;
+import pages.MenuPage;
+import pages.ProductsPage;
 import utils.JsonReader;
 import utils.ScreenshotUtils;
 import java.net.MalformedURLException;
@@ -22,7 +23,7 @@ public class LoginTest {
     // Driver instance for Android interactions
     private AndroidDriver driver;
     private JsonReader jsonReader;
-    LoginPage loginPage;
+    private LoginPage loginPage;
 
     /**
      * Starts Appium server before all test classes
@@ -43,33 +44,32 @@ public class LoginTest {
         loginPage = new LoginPage(driver);
     }
 
-    @Test
+    @Test(description = "Verifies successful login with valid credentials and redirection to the product page")
     public void testValidLogin() {
 
        loginPage
                  .enterUsername(jsonReader.getValue("valid_username"))
                  .enterPassword(jsonReader.getValue("valid_password"))
-                 .clickLogin();
+                 .clickOnLogin();
 
-
-        ProductPage productPage = new ProductPage(driver);
-        String expectedHeader=jsonReader.getValue("product_page_header");;
-        String actualHeader=productPage.getPageTitle();
-        Assert.assertEquals( actualHeader, expectedHeader, "Login failed");
+        ProductsPage productsPage = new ProductsPage(driver);
+        String expectedHeader=jsonReader.getValue("product_page_header");
+        String actualHeader= productsPage.getPageTitle();
+        Assert.assertEquals( actualHeader, expectedHeader, "Login failed: Product page header mismatch");
     }
-    @Test
+    @Test(description = "Verifies that the correct error message is displayed for invalid login attempts")
     public void testInvalidLogin() {
 
         loginPage
                 .enterUsername(jsonReader.getValue("valid_username"))
                 .enterPassword(jsonReader.getValue("invalid_password"))
-                .clickLogin();
+                .clickOnLogin();
 
         String actualErrorMessage = loginPage.getErrorMessage();
         String expectedErrorMessage= jsonReader.getValue("invalid_login_error_message");
         Assert.assertEquals( actualErrorMessage, expectedErrorMessage, "Error message not displayed correctly");
     }
-    @Test
+    @Test(description ="Verifies that a user can log in successfully after a previous invalid login attempt")
     public void testValidLoginAfterInvalidCredentials() {
         SoftAssert softAssert = new SoftAssert();
 
@@ -77,7 +77,7 @@ public class LoginTest {
         loginPage
                 .enterUsername(jsonReader.getValue("valid_username"))
                 .enterPassword(jsonReader.getValue("invalid_password"))
-                .clickLogin();
+                .clickOnLogin();
 
         // Soft assert for error message
         String expectedErrorMessage = jsonReader.getValue("invalid_login_error_message");
@@ -88,39 +88,56 @@ public class LoginTest {
         loginPage
                 .enterUsername(jsonReader.getValue("valid_username"))
                 .enterPassword(jsonReader.getValue("valid_password"))
-                .clickLogin();
+                .clickOnLogin();
 
         // Verify successful login
-        ProductPage productPage = new ProductPage(driver);
+        ProductsPage productsPage = new ProductsPage(driver);
         String expectedHeader = jsonReader.getValue("product_page_header");
-        Assert.assertEquals(productPage.getPageTitle(), expectedHeader, "Valid login failed after invalid attempt");
+        Assert.assertEquals(productsPage.getPageTitle(), expectedHeader, "Valid login failed after invalid attempt");
 
         // Collect all soft assertion results
         softAssert.assertAll();
     }
+    @Test(description ="Verifies that a user can log out after logging in and is returned to the login screen")
+    public void testLogout() {
+
+        loginPage
+                .enterUsername(jsonReader.getValue("valid_username"))
+                .enterPassword(jsonReader.getValue("valid_password"))
+                .clickOnLogin();
+
+        ProductsPage productsPage = new ProductsPage(driver);
+        String expectedHeader=jsonReader.getValue("product_page_header");
+        String actualHeader= productsPage.getPageTitle();
+        Assert.assertEquals(actualHeader, expectedHeader, "Login failed: Product page header mismatch");
+        // Logout
+        productsPage.clickOnMenuButton();
+        MenuPage menuPage=new MenuPage(driver);
+        menuPage.clickLogoutButton();
+
+        // Verify logout
+        boolean loginButtonDisplayed = loginPage.loginButton().isDisplayed();
+        Assert.assertTrue(loginButtonDisplayed,"Logout failed: Login button is not displayed after logout");
+    }
     /**
      * Cleans up driver after each test method
      */
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void quitDriver(ITestResult result) {
-        // Quit driver
-        if (driver != null) {
-            driverFactory.quitDriver();
-        }
         // Capture screenshot on failure
         if (result.getStatus() == ITestResult.FAILURE) {
             String testName = result.getMethod().getMethodName();
             ScreenshotUtils.captureScreenshot(driver, testName);
         }
+        // Quit driver
+        driverFactory.quitDriver();
     }
     /**
      * Stops Appium server after all test classes
      */
-    @AfterClass
+    @AfterClass(alwaysRun = true)
     public void quitServer() {
-        if (service != null && service.isRunning()) {
             driverFactory.stopServer();
-        }
     }
 
 }

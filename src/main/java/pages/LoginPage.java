@@ -3,18 +3,20 @@ package pages;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import utils.ElementsActions;
+import utils.Waits;
 
 public class LoginPage {
-    // Define locators
+
     private final AndroidDriver driver;
+    // Define locators
     private final By username = AppiumBy.accessibilityId("test-Username");
     private final By password = AppiumBy.accessibilityId("test-Password");
     private final By loginButton = AppiumBy.accessibilityId("test-LOGIN");
     private final By errorMessage = AppiumBy.xpath("//android.widget.TextView[@text=\"Username and password do not match any user in this service.\"]");
 
-
-
+    // Constructor
     public LoginPage(AndroidDriver driver) {
         this.driver = driver;
     }
@@ -29,14 +31,18 @@ public class LoginPage {
         return this;
     }
 
-    public ProductPage clickLogin() {
+    public ProductsPage clickOnLogin() {
         ElementsActions.clicking(driver,loginButton);
-        return new ProductPage(driver);
+        return new ProductsPage(driver);
     }
 
     public String getErrorMessage(){
         return ElementsActions.getAttributeFromElement(driver,errorMessage,"text");
     }
+    public WebElement loginButton() {
+        return  Waits.waitForElementVisible(driver,loginButton);
+    }
+
 
 
 }
