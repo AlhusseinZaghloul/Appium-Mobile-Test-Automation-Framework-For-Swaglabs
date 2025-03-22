@@ -53,7 +53,7 @@ public class LoginTest {
                  .clickOnLogin();
 
         ProductsPage productsPage = new ProductsPage(driver);
-        String expectedHeader=jsonReader.getValue("product_page_header");
+        String expectedHeader=jsonReader.getValue("product_page_title");
         String actualHeader= productsPage.getPageTitle();
         Assert.assertEquals( actualHeader, expectedHeader, "Login failed: Product page header mismatch");
     }
@@ -92,7 +92,7 @@ public class LoginTest {
 
         // Verify successful login
         ProductsPage productsPage = new ProductsPage(driver);
-        String expectedHeader = jsonReader.getValue("product_page_header");
+        String expectedHeader = jsonReader.getValue("product_page_title");
         Assert.assertEquals(productsPage.getPageTitle(), expectedHeader, "Valid login failed after invalid attempt");
 
         // Collect all soft assertion results
@@ -107,7 +107,7 @@ public class LoginTest {
                 .clickOnLogin();
 
         ProductsPage productsPage = new ProductsPage(driver);
-        String expectedHeader=jsonReader.getValue("product_page_header");
+        String expectedHeader=jsonReader.getValue("product_page_title");
         String actualHeader= productsPage.getPageTitle();
         Assert.assertEquals(actualHeader, expectedHeader, "Login failed: Product page header mismatch");
         // Logout
