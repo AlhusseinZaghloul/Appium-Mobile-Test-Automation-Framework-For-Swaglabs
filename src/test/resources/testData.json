@@ -5,5 +5,7 @@
   "product_page_header": "PRODUCTS",
   "invalid_login_error_message": "Username and password do not match any user in this service.",
   "product_price": "$29.99",
-  "product_title": "Sauce Labs Backpack"
+  "product_title": "Sauce Labs Backpack",
+  "product_description": "carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection."
+
 }
