@@ -39,8 +39,15 @@ public class LoginPage {
     public String getErrorMessage(){
         return ElementsActions.getAttributeFromElement(driver,errorMessage,"text");
     }
+
     public WebElement loginButton() {
         return  Waits.waitForElementVisible(driver,loginButton);
+    }
+
+    public ProductsPage login (String username, String password){
+        this.enterUsername(username);
+        this.enterPassword(password);
+        return this.clickOnLogin();
     }
 
 
