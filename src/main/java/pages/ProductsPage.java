@@ -29,12 +29,21 @@ public class ProductsPage {
     public String getSauseLabsBackPackPrice() {
         return ElementsActions.getAttributeFromElement(driver,sauseLabsBackPackPrice,"text");
     }
-    public ProductDetailsPage clickOnSauseLabsBackPackTitle(){
-        ElementsActions.clicking(driver,sauseLabsBackPackTitle);
-        return new ProductDetailsPage(driver);
-    }
+
     public MenuPage clickOnMenuButton(){
         ElementsActions.clicking(driver,menuButton);
         return new MenuPage(driver);
+    }
+
+    private ProductDetailsPage clickOnSauseLabsBackPackTitle(){
+        ElementsActions.clicking(driver,sauseLabsBackPackTitle);
+        return new ProductDetailsPage(driver);
+    }
+
+    public ProductDetailsPage navigateToProductDetailsPage(String username, String password) {
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login(username, password);
+        return this.clickOnSauseLabsBackPackTitle();
+
     }
 }

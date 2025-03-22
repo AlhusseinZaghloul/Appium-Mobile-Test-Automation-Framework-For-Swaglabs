@@ -3,6 +3,7 @@ package tests;
 import drivers.DriverFactory;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
+import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
@@ -11,7 +12,6 @@ import pages.ProductDetailsPage;
 import pages.ProductsPage;
 import utils.JsonReader;
 import utils.ScreenshotUtils;
-
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
@@ -47,13 +47,10 @@ public class ProductDetailsTest {
 
     @Test( description = "Verifies product details displayed in product details page successfully")
     public void testProductDetailsDisplayedSuccessfully() {
-        //perform login
-        loginPage
-                .login(jsonReader.getValue("valid_username"), jsonReader.getValue("valid_password"));
-
-        //open product details page
+        //Navigate to product details page after login
         productsPage = new ProductsPage(driver);
-        productsPage.clickOnSauseLabsBackPackTitle();
+        productsPage.navigateToProductDetailsPage
+                (jsonReader.getValue("valid_username"), jsonReader.getValue("valid_password"));
 
         //verify product details
         productDetailsPage = new ProductDetailsPage(driver);
@@ -66,6 +63,34 @@ public class ProductDetailsTest {
         SoftAssert softAssert = new SoftAssert();
         softAssert.assertEquals(actualProductDescription, expectedProductDescription, "Product description mismatch");
         softAssert.assertEquals(actualProductTitle, expectedProductTitle, "Product title mismatch");
+        softAssert.assertAll();
+    }
+    @Test(description = "Verifies back to products button functionality in product details page")
+    public void testBackToProductsButtonFunctionality() {
+        //Navigate to product details page after login
+        productsPage = new ProductsPage(driver);
+        productsPage.navigateToProductDetailsPage
+                (jsonReader.getValue("valid_username"), jsonReader.getValue("valid_password"));
+
+        //verify product details
+        productDetailsPage = new ProductDetailsPage(driver);
+        String actualProductDescription = productDetailsPage.getProductDescription();
+        String actualProductTitle =productDetailsPage.getProductTitle();
+        String expectedProductDescription = jsonReader.getValue("product_description");
+        String expectedProductTitle = jsonReader.getValue("product_title");
+
+        // Assert for texts
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertEquals(actualProductDescription, expectedProductDescription, "Product description mismatch");
+        softAssert.assertEquals(actualProductTitle, expectedProductTitle, "Product title mismatch");
+
+        // Click on back to products page button
+        productDetailsPage.clickBackToProducts();
+
+        // Verify products page title
+        String actualPageTitle = productsPage.getPageTitle();
+        String expectedPageTitle = jsonReader.getValue("product_page_title");
+        softAssert.assertEquals(actualPageTitle, expectedPageTitle, "Page title mismatch");
         softAssert.assertAll();
     }
     /**
