@@ -45,7 +45,7 @@ public class ProductDetailsTest {
         loginPage = new LoginPage(driver);
     }
 
-    @Test(description = "Verifies product details after successful login")
+    @Test( description = "Verifies product details displayed in product details page successfully")
     public void testProductDetailsDisplayedSuccessfully() {
         //perform login
         loginPage
