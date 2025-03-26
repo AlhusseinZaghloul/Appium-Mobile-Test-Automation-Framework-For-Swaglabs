@@ -11,6 +11,7 @@ public class ElementsActions {
 
         Waits.waitForElementVisible(driver, locator);
         driver.findElement(locator).sendKeys(data);
+        LogsUtils.info("Data entered: ", data , " in element: ", locator.toString());
     }
 
     //code to perform click operation
@@ -18,11 +19,13 @@ public class ElementsActions {
 
         Waits.waitForElementClickable(driver, locator);
         driver.findElement(locator).click();
+        LogsUtils.info("Clicked on element: ", locator.toString());
     }
     //get attribute from element
     public static String getAttributeFromElement(AndroidDriver driver , By locator , String attribute) {
 
         Waits.waitForElementVisible(driver, locator);
+        LogsUtils.info("Getting attribute: ", attribute , " from element: ", locator.toString());
         return driver.findElement(locator).getDomAttribute(attribute);
     }
 }
