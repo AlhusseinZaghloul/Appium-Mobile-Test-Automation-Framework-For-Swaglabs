@@ -3,6 +3,8 @@ package drivers;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
+import utils.LogsUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -70,6 +72,8 @@ public class DriverFactory {
 
         // Initialize the driver with the dynamic URI
         driver = new AndroidDriver(new URI(appiumServerUri).toURL(), options);
+        LogsUtils.info("Driver initialized with capabilities: ", options.toString());
+        LogsUtils.info("Driver session ID: ", driver.getSessionId().toString());
         return driver;
     }
 
