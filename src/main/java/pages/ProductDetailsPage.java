@@ -12,6 +12,7 @@ public class ProductDetailsPage {
     By productTitle = AppiumBy.androidUIAutomator("new UiSelector().text(\"Sauce Labs Backpack\")");
     By productDescription = AppiumBy.androidUIAutomator("new UiSelector().text(\"carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.\")");
     By backToProductsButton = AppiumBy.androidUIAutomator("new UiSelector().text(\"BACK TO PRODUCTS\")");
+    By productPrice = AppiumBy.accessibilityId("test-Price");
 
     // Constructor
     public ProductDetailsPage(AndroidDriver driver) {
