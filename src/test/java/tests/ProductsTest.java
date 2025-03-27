@@ -3,6 +3,7 @@ package tests;
 import drivers.DriverFactory;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
+import listeners.TestNGListeners;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
@@ -10,10 +11,10 @@ import pages.LoginPage;
 import pages.ProductsPage;
 import utils.JsonReader;
 import utils.ScreenshotUtils;
-
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
+@Listeners(TestNGListeners.class)
 public class ProductsTest {
 
     DriverFactory driverFactory = new DriverFactory();
