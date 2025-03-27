@@ -2,6 +2,7 @@ package pages;
 
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import utils.ElementsActions;
@@ -21,29 +22,35 @@ public class LoginPage {
         this.driver = driver;
     }
 
+    @Step("Entering username: {text}")
     public LoginPage enterUsername(String text) {
         ElementsActions.sendData(driver,username,text);
         return this;
     }
 
+    @Step("Entering password: {text}")
     public LoginPage enterPassword(String text) {
         ElementsActions.sendData(driver,password,text);
         return this;
     }
 
+    @Step("Clicking on login button")
     public ProductsPage clickOnLogin() {
         ElementsActions.clicking(driver,loginButton);
         return new ProductsPage(driver);
     }
 
+    @Step("Getting error message")
     public String getErrorMessage(){
         return ElementsActions.getAttributeFromElement(driver,errorMessage,"text");
     }
 
+    @Step("Getting username element")
     public WebElement loginButton() {
         return  Waits.waitForElementVisible(driver,loginButton);
     }
 
+    @Step("Performing login")
     public ProductsPage login (String username, String password){
         this.enterUsername(username);
         this.enterPassword(password);
