@@ -41,6 +41,7 @@ public class ProductsPage {
         return new MenuPage(driver);
     }
 
+    @Step("Clicking on Sause Labs BackPack title")
     private ProductDetailsPage clickOnSauseLabsBackPackTitle(){
         ElementsActions.clicking(driver,sauseLabsBackPackTitle);
         return new ProductDetailsPage(driver);
