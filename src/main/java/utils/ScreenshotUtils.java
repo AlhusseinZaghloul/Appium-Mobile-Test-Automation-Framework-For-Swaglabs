@@ -10,11 +10,13 @@ import java.time.format.DateTimeFormatter;
 
 public class ScreenshotUtils {
 
+    public static final String SCREENSHOTS_PATH = "test-outputs/screenshots";
+
     public static void captureScreenshot(AppiumDriver driver, String testName) {
         if (driver == null) return;
 
         // Create screenshots directory if it doesn't exist
-        File directory = new File("screenshots");
+        File directory = new File(SCREENSHOTS_PATH);
         if (!directory.exists()) directory.mkdirs();
 
         // Generate timestamp

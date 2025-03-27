@@ -6,6 +6,8 @@ import org.apache.logging.log4j.Logger;
 public class LogsUtils {
     private LogsUtils() {}
 
+    public static final String LOGS_PATH = "test-outputs/Logs";
+
     private static Logger logger() {
         return LogManager.getLogger(Thread.currentThread().getStackTrace()[3].getClassName());
     }
