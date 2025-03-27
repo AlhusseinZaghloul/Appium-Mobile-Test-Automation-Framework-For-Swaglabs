@@ -3,6 +3,7 @@ package drivers;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
+import io.qameta.allure.Step;
 import utils.LogsUtils;
 
 import java.io.IOException;
@@ -30,6 +31,7 @@ public class DriverFactory {
     /*
      * Starts the Appium server using the default service configuration.
      */
+    @Step("Starting Appium server")
     public AppiumDriverLocalService startServer() {
         service = AppiumDriverLocalService.buildDefaultService();
         service.start();
@@ -42,6 +44,7 @@ public class DriverFactory {
      * @throws URISyntaxException if the Appium server URI is invalid.
      * @throws MalformedURLException if the Appium server URL is malformed.
      */
+    @Step("Setting up Android driver")
     public AndroidDriver setupDriver() throws URISyntaxException, MalformedURLException {
 
         // Load properties from config.properties
@@ -80,6 +83,7 @@ public class DriverFactory {
     /*
      * Quits the AndroidDriver instance to close the application and test session.
      */
+    @Step("Quitting Android driver")
     public void quitDriver() {
         if (driver != null) {
             driver.quit();
@@ -89,6 +93,7 @@ public class DriverFactory {
     /*
      * Stops the Appium server if it is currently running.
      */
+    @Step("Stopping Appium server")
     public void stopServer() {
         if (service != null && service.isRunning()) {
             service.stop();
