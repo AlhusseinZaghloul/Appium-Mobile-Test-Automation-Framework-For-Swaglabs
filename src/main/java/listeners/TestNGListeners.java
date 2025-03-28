@@ -1,5 +1,7 @@
 package listeners;
 
+import drivers.DriverManagerUtils;
+import io.appium.java_client.android.AndroidDriver;
 import org.testng.*;
 import utils.AllureUtils;
 import utils.FilesUtils;
@@ -42,7 +44,12 @@ public class TestNGListeners implements IExecutionListener, ITestListener, IInvo
     @Override
     public void onTestFailure(ITestResult result) {
         LogsUtils.info("Test case" , result.getName() , "failed");
-
+        AndroidDriver driver = DriverManagerUtils.getDriver();
+        if (driver != null) {
+            ScreenshotUtils.captureScreenshot(driver, result.getName());
+        } else {
+            LogsUtils.info("Driver is null, cannot take screenshot for test " + result.getName());
+        }
     }
 
     @Override
