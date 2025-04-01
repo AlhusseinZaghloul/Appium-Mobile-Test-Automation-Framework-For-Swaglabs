@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class ScreenshotUtils {
+    public class ScreenshotUtils {
 
     public static final String SCREENSHOTS_PATH = "test-outputs/screenshots/";
     private static final DateTimeFormatter TIMESTAMP_FORMAT =

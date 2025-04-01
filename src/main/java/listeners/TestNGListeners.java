@@ -1,6 +1,6 @@
 package listeners;
 
-import drivers.DriverManagerUtils;
+import drivers.DriverFactory;
 import io.appium.java_client.android.AndroidDriver;
 import org.testng.*;
 import utils.AllureUtils;
@@ -35,7 +35,6 @@ public class TestNGListeners implements IExecutionListener, ITestListener, IInvo
         }
     }
 
-
     @Override
     public void onTestSuccess(ITestResult result) {
         LogsUtils.info("Test case" , result.getName() , "passed");
@@ -43,8 +42,8 @@ public class TestNGListeners implements IExecutionListener, ITestListener, IInvo
 
     @Override
     public void onTestFailure(ITestResult result) {
-        LogsUtils.info("Test case" , result.getName() , "failed");
-        AndroidDriver driver = DriverManagerUtils.getDriver();
+        LogsUtils.info("Test case " , result.getName() , " failed");
+        AndroidDriver driver = DriverFactory.getDriver();
         if (driver != null) {
             ScreenshotUtils.captureScreenshot(driver, result.getName());
         } else {
@@ -55,7 +54,6 @@ public class TestNGListeners implements IExecutionListener, ITestListener, IInvo
     @Override
     public void onTestSkipped(ITestResult result) {
         LogsUtils.info("Test case" , result.getName() , "skipped");
-
     }
 
 

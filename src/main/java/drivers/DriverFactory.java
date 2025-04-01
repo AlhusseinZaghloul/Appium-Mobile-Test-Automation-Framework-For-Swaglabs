@@ -23,16 +23,16 @@ import java.util.Properties;
 public class DriverFactory {
 
     // Instance of the Appium service managing the local server.
-    private AppiumDriverLocalService service;
+    private static AppiumDriverLocalService service;
 
     // Instance of AndroidDriver for interacting with the Android device.
-    private AndroidDriver driver;
+    private static AndroidDriver driver;
 
     /*
      * Starts the Appium server using the default service configuration.
      */
     @Step("Starting Appium server")
-    public AppiumDriverLocalService startServer() {
+    public static AppiumDriverLocalService startServer() {
         service = AppiumDriverLocalService.buildDefaultService();
         service.start();
         return service;
@@ -45,11 +45,11 @@ public class DriverFactory {
      * @throws MalformedURLException if the Appium server URL is malformed.
      */
     @Step("Setting up Android driver")
-    public AndroidDriver setupDriver() throws URISyntaxException, MalformedURLException {
+    public static AndroidDriver  setupDriver() throws URISyntaxException, MalformedURLException {
 
         // Load properties from config.properties
         Properties props = new Properties();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+        try (InputStream input = DriverFactory.class.getClassLoader().getResourceAsStream("config.properties")) {
             if (input == null) {
                 throw new IOException("Unable to find config.properties in src/test/resources");
             }
@@ -58,7 +58,7 @@ public class DriverFactory {
             throw new RuntimeException(e);
         }
 
-        // Create options and set capabilities from properties
+        // Create options and set capabilities from properties file
         UiAutomator2Options options = new UiAutomator2Options();
         options.setPlatformName(props.getProperty("platformName"));
         options.setDeviceName(props.getProperty("deviceName"));
@@ -84,7 +84,7 @@ public class DriverFactory {
      * Quits the AndroidDriver instance to close the application and test session.
      */
     @Step("Quitting Android driver")
-    public void quitDriver() {
+    public static void quitDriver() {
         if (driver != null) {
             driver.quit();
         }
@@ -94,9 +94,12 @@ public class DriverFactory {
      * Stops the Appium server if it is currently running.
      */
     @Step("Stopping Appium server")
-    public void stopServer() {
+    public static void stopServer() {
         if (service != null && service.isRunning()) {
             service.stop();
         }
+    }
+    public static AndroidDriver getDriver() {
+        return driver;
     }
 }
