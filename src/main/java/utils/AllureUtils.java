@@ -17,7 +17,7 @@ public class AllureUtils {
 
         // Get the latest log file from the logs directory
         File logFile = FilesUtils.getLatestFile(LogsUtils.LOGS_PATH);
-
+        // Check if the log file exists
         if (logFile != null && logFile.exists()){
             try (InputStream is = new FileInputStream(logFile)) {
                 Allure.addAttachment("Execution Logs", Files.readString(logFile.toPath()));
