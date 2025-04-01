@@ -10,14 +10,12 @@ import org.testng.asserts.SoftAssert;
 import pages.LoginPage;
 import pages.ProductsPage;
 import utils.JsonReader;
-import utils.ScreenshotUtils;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
 @Listeners(TestNGListeners.class)
 public class ProductsTest {
 
-    DriverFactory driverFactory = new DriverFactory();
     // Server instance for Appium managing the local server.
     private AppiumDriverLocalService service;
     // Driver instance for Android interactions
@@ -31,7 +29,7 @@ public class ProductsTest {
      */
     @BeforeClass
     public void setupServer() {
-        service= driverFactory.startServer();
+        service= DriverFactory.startServer();
         jsonReader = new JsonReader("testData.json");
     }
 
@@ -41,7 +39,7 @@ public class ProductsTest {
      */
     @BeforeMethod
     public void setupDriver() throws URISyntaxException, MalformedURLException {
-        driver= driverFactory.setupDriver();
+        driver = DriverFactory.setupDriver();
         loginPage = new LoginPage(driver);
     }
 
@@ -69,19 +67,13 @@ public class ProductsTest {
      */
     @AfterMethod(alwaysRun = true)
     public void quitDriver(ITestResult result) {
-        // Capture screenshot on failure
-        if (result.getStatus() == ITestResult.FAILURE) {
-            String testName = result.getMethod().getMethodName();
-            ScreenshotUtils.captureScreenshot(driver, testName);
-        }
-        // Quit driver
-        driverFactory.quitDriver();
+        DriverFactory.quitDriver();
     }
     /**
      * Stops Appium server after all test classes
      */
     @AfterClass(alwaysRun = true)
     public void quitServer() {
-        driverFactory.stopServer();
+        DriverFactory.stopServer();
     }
 }

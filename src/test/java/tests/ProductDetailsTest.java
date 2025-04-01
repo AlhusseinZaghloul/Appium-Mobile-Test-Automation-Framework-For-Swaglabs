@@ -3,7 +3,7 @@ package tests;
 import drivers.DriverFactory;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
-import org.testng.Assert;
+import listeners.TestNGListeners;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
@@ -11,12 +11,11 @@ import pages.LoginPage;
 import pages.ProductDetailsPage;
 import pages.ProductsPage;
 import utils.JsonReader;
-import utils.ScreenshotUtils;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
+@Listeners(TestNGListeners.class)
 public class ProductDetailsTest {
-    DriverFactory driverFactory = new DriverFactory();
     // Server instance for Appium managing the local server.
     private AppiumDriverLocalService service;
     // Driver instance for Android interactions
@@ -31,7 +30,7 @@ public class ProductDetailsTest {
      */
     @BeforeClass
     public void setupServer() {
-        service= driverFactory.startServer();
+        service= DriverFactory.startServer();
         jsonReader = new JsonReader("testData.json");
     }
 
@@ -41,7 +40,7 @@ public class ProductDetailsTest {
      */
     @BeforeMethod
     public void setupDriver() throws URISyntaxException, MalformedURLException {
-        driver= driverFactory.setupDriver();
+        driver= DriverFactory.setupDriver();
         loginPage = new LoginPage(driver);
     }
 
@@ -98,19 +97,13 @@ public class ProductDetailsTest {
      */
     @AfterMethod(alwaysRun = true)
     public void quitDriver(ITestResult result) {
-        // Capture screenshot on failure
-        if (result.getStatus() == ITestResult.FAILURE) {
-            String testName = result.getMethod().getMethodName();
-            ScreenshotUtils.captureScreenshot(driver, testName);
-        }
-        // Quit driver
-        driverFactory.quitDriver();
+        DriverFactory.quitDriver();
     }
     /**
      * Stops Appium server after all test classes
      */
     @AfterClass(alwaysRun = true)
     public void quitServer() {
-        driverFactory.stopServer();
+        DriverFactory.stopServer();
     }
 }

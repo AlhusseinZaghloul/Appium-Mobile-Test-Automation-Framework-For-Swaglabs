@@ -12,14 +12,12 @@ import pages.LoginPage;
 import pages.MenuPage;
 import pages.ProductsPage;
 import utils.JsonReader;
-import utils.ScreenshotUtils;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
 @Listeners(TestNGListeners.class)
 public class LoginTest {
 
-    DriverFactory driverFactory = new DriverFactory();
     // Server instance for Appium managing the local server.
     private  AppiumDriverLocalService service;
     // Driver instance for Android interactions
@@ -30,9 +28,9 @@ public class LoginTest {
     /**
      * Starts Appium server before all test classes
      */
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void setupServer() {
-       service= driverFactory.startServer();
+       service= DriverFactory.startServer();
        jsonReader = new JsonReader("testData.json");
     }
 
@@ -42,7 +40,7 @@ public class LoginTest {
      */
     @BeforeMethod
     public void setupDriver() throws URISyntaxException, MalformedURLException {
-        driver= driverFactory.setupDriver();
+        driver= DriverFactory.setupDriver();
         loginPage = new LoginPage(driver);
     }
 
@@ -126,20 +124,14 @@ public class LoginTest {
      */
     @AfterMethod(alwaysRun = true)
     public void quitDriver(ITestResult result) {
-        // Capture screenshot on failure
-        if (result.getStatus() == ITestResult.FAILURE) {
-            String testName = result.getMethod().getMethodName();
-            ScreenshotUtils.captureScreenshot(driver, testName);
-        }
-        // Quit driver
-        driverFactory.quitDriver();
+        DriverFactory.quitDriver();
     }
     /**
      * Stops Appium server after all test classes
      */
     @AfterClass(alwaysRun = true)
     public void quitServer() {
-            driverFactory.stopServer();
-    }
+        DriverFactory.stopServer();
+        }
 
 }
