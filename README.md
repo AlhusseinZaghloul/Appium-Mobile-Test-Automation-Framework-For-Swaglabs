@@ -21,11 +21,14 @@ This project provides a comprehensive and scalable mobile test automation framew
 - **Externalized Configuration:** Centralizes configuration settings (e.g., device capabilities, application paths) in external files, allowing for easy environment management.
 - **Externalized Test Data:** Separates test data from test scripts, enabling data-driven testing and simplifying data management.
 - **Maven Dependency Management:** Uses Maven for efficient dependency management, ensuring consistent build processes and easy integration with CI/CD pipelines.
+- **Clear Reporting:** Allure reporting features provide detailed test execution summaries and failure analysis, with utilities like `AllureUtils` further enhancing the reports by attaching execution logs from tests, making it easier to diagnose any issues.
+- **Comprehensive Logging:**
+Centralized with Log4j 2 via `LogsUtils` for consistent output, it supports multiple levels for adjustable detail.
+Stored in `test-outputs/Logs` and also attached in Allure report, auto-cleaned before each test run.
+- **Screenshot on Failure:** Automatically captures screenshots when a test fails, implemented in the `TestNGListeners` class. The `onTestFailure` method uses `ScreenshotUtils` to save screenshots with the test name, aiding in debugging by providing visual context for failures.
 - **Scalability:** Designed to accommodate growing test suites and complex application workflows.
-- **Clear Reporting:** TestNG's reporting features provide detailed test execution summaries and failure analysis.
-- **Easy Setup and Usage:** Designed for ease of use, enabling quick onboarding for new team members.
 - **CI/CD Friendly:** Can be easily integrated into continuous integration and continuous delivery pipelines for automated testing.
-- **Focus on Reusability:** The framework promotes code reusability through modular design and shared components.
+- **Focus on Reusability:** The framework promotes code reusability through modular design and shared components with respect Single Resonsibility Principle (SRP).
 
 ## Prerequisites
 
@@ -46,64 +49,78 @@ Additionally, ensure that the Swag Labs application APK is available, as you wil
 The framework is organized into a modular structure to separate concerns and streamline development and testing workflows. Below is the detailed directory structure:
 
 ```
-Swaglabs-Appium-Mobile-Test-Automation-Framework
+Appium-Mobile-Test-Automation-Framework-For-Swaglabs/
 ├── .idea/
 ├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   ├── drivers/
-│   │   │   │   └── DriverFactory.java
-│   │   │   ├── pages/
-│   │   │   │   ├── LoginPage.java
-│   │   │   │   └── ProductPage.java
-│   │   │   └── utils/
-│   │   │       ├── ElementsActions.java
-│   │   │       ├── JsonReader.java
-│   │   │       └── Waits.java
-│   │   └── resources/
-│   └── test/
-│       ├── java/
-│       │   └── tests/
-│       │       └── LoginTest.java
+│   └── main/
+│       └── java/
+│           ├── drivers/
+│           │   └── DriverFactory
+│           ├── listeners/
+│           │   └── TestNGListeners
+│           ├── pages/
+│           │   ├── LoginPage
+│           │   ├── MenuPage
+│           │   ├── ProductDetailsPage
+│           │   └── ProductsPage
+│           └── utils/
+│               ├── AllureUtils
+│               ├── ElementsActions
+│               ├── FilesUtils
+│               ├── JsonReader
+│               ├── LogsUtils
+│               ├── ScreenshotUtils
+│               └── Waits
 │       └── resources/
-│           ├── config.properties
-│           ├── SauceLabs-app.apk
-│           └── testData.json
-└── target/
+│           ├── allure.properties
+│           └── log4j2.properties
+├── test/
+│   └── java/
+│       └── tests/
+│           ├── LoginTest
+│           ├── ProductDetailsTest
+│           └── ProductsTest
+│   └── resources/
+│       ├── config.properties
+│       ├── SauceLabs-app.apk
+│       └── testData.json
+├── test-outputs/
+│   ├── allure-results/
+│   ├── Logs/
+│   ├── screenshots/
+│   └── target/
+├── .gitignore
+├── pom.xml
+└── README.md
 ```
 
 Key directories and their purposes are outlined below:
+- **`src/main/java`**: Core Java classes for the framework.
+  - **`drivers/`**: Contains `DriverFactory` for managing the Appium server and `AndroidDriver` lifecycle.
+  - **`listeners/`**: Houses `TestNGListeners` for handling test events and reporting.
+  - **`pages/`**: Implements POM with classes like `LoginPage` and `ProductsPage` for UI interactions.
+  - **`utils/`**: Utility classes with specific responsibilities:
+    - `AllureUtils`: Enhances Allure reports by attaching logs.
+    - `ElementsActions`: Provides methods for UI element interactions.
+    - `FilesUtils`: Handles file system operations (e.g., file retrieval, directory cleaning).
+    - `JsonReader`: Reads JSON test data.
+    - `LogsUtils`: Manages logging with Log4j 2.
+    - `ScreenshotUtils`: Captures screenshots during test execution.
+    - `Waits`: Manages wait conditions.
 
-- **`src/main/java`**  
-  Contains the core Java classes for the framework.
-  - **`drivers/`**: Houses the `DriverFactory` class, which manages the Appium server and AndroidDriver lifecycle. It handles starting, stopping, and configuring the driver based on settings from `config.properties`.
-  - **`pages/`**: Implements the Page Object Model with classes like `LoginPage` and `ProductPage`. These classes encapsulate UI interactions and validations for specific screens of the Android application.
-  - **`utils/`**: Contains utility classes that provide common functionalities:
-    - `ElementsActions.java`: Methods for interacting with UI elements (e.g., click, send keys).
-    - `JsonReader.java`: Utility for reading and parsing JSON test data from `testData.json`.
-    - `Waits.java`: Helper methods for handling explicit and implicit waits.
+- **`src/main/resources/`**: Configuration files like `allure.properties` and `log4j2.properties`.
 
-- **`src/main/resources/`**  
-  Currently empty. This directory can be used for any resources needed by the main application code, such as configuration files or static assets.
+- **`src/test/java`**: Test classes.
+  - **`tests/`**: Includes test classes like: `LoginTest`, `ProductDetailsTest`, and `ProductsTest`.
 
-- **`src/test/java`**  
-  Contains the test classes.
-  - **`tests/`**: Includes test classes like `LoginTest`, which define test scenarios using TestNG. Each test method includes setup and teardown processes to interact with the application seamlessly.
+- **`src/test/resources/`**: Test resources.
+  - `config.properties`: Externalizes Appium and device settings.
+  - `SauceLabs-app.apk`: Swag Labs APK for testing.
+  - `testData.json`: External test data for assertions.
 
-- **`src/test/resources/`**  
-  Stores resources used by the test classes.
-  - **`config.properties`**: A self-documenting configuration file that externalizes settings for the Appium driver and server, such as device capabilities, application details, and server URIs. Comments within the file explain each property’s purpose.
-  - **`SauceLabs-app.apk`**: The APK file for the Swag Labs application, used for installation on the test device.
-  - **`testData.json`**: Stores external test data (e.g., expected headers, error messages) used for assertions in test cases, enabling data-driven testing.
+- **`test-outputs/`**: Stores test outputs (Allure results, logs, screenshots).
 
-- **`target/`**  
-  Generated by Maven during the build process. Contains compiled classes, test reports, and other build artifacts. This directory is not part of the source code but is included in the project structure for completeness.
-
-- **`.idea/`**  
-  Contains IntelliJ IDEA project settings. This directory is specific to users of the IntelliJ IDE and is not essential to the framework’s functionality.
-
-This structure ensures a clear separation of concerns, making the framework easy to navigate and maintain.
-
+This structure ensures a clear separation of concerns, aligning with SRP to enhance maintainability.
 ## Key Components
 
 - **Driver Management**  
