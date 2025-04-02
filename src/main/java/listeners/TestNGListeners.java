@@ -18,14 +18,11 @@ public class TestNGListeners implements IExecutionListener, ITestListener, IInvo
         FilesUtils.deleteFiles(new File(AllureUtils.ALLURE_RESULTS_PATH));
         FilesUtils.cleanDirectory(new File(LogsUtils.LOGS_PATH));
         FilesUtils.cleanDirectory(new File(ScreenshotUtils.SCREENSHOTS_PATH));
-
     }
 
     @Override
     public void onExecutionFinish() {
         LogsUtils.info("Test Execution finished");
-        //AllureUtils.attachLogsToAllureReport();
-
     }
 
     @Override
